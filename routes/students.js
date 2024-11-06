@@ -3,22 +3,22 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const studentController = require('../controllers/studentController');
 
-// Validasi untuk create student
+// Validation for create student
 const createStudentValidation = [
-  body('npm').notEmpty().withMessage('NPM wajib diisi')
-    .isLength({ min: 8, max: 8 }).withMessage('NPM harus 8 karakter'),
-  body('name').notEmpty().withMessage('Nama wajib diisi')
-    .isLength({ min: 3 }).withMessage('Nama minimal 3 karakter'),
-  body('class').notEmpty().withMessage('Kelas wajib diisi'),
+  body('npm').notEmpty().withMessage('NPM is required')
+    .isLength({ min: 8, max: 8 }).withMessage('NPM must be 8 characters'),
+  body('name').notEmpty().withMessage('Name is required')
+    .isLength({ min: 3 }).withMessage('Name must be at least 3 characters'),
+  body('class').notEmpty().withMessage('Class is required'),
 ];
 
-// Validasi untuk update student
+// Validation for update student
 const updateStudentValidation = [
-  body('name').optional().isLength({ min: 3 }).withMessage('Nama minimal 3 karakter'),
-  body('class').optional().notEmpty().withMessage('Kelas tidak boleh kosong'),
+  body('name').optional().isLength({ min: 3 }).withMessage('Name must be at least 3 characters'),
+  body('class').optional().notEmpty().withMessage('Class cannot be empty'),
 ];
 
-// Middleware untuk mengecek hasil validasi
+// Middleware to check validation results
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -27,7 +27,7 @@ const validate = (req, res, next) => {
   next();
 };
 
-// Routes dengan controller
+// Routes with controller
 router.post('/', createStudentValidation, validate, studentController.createStudent);
 router.get('/', studentController.getAllStudents);
 router.get('/:npm', studentController.getStudentByNpm);

@@ -7,12 +7,19 @@ const studentController = {
   createStudent: async (req, res) => {
     try {
       const { npm, name, class: className } = req.body;
+      
+      // Cek apakah NPM sudah ada
+      const snapshot = await get(ref(db, `students/${npm}`));
+      if (snapshot.exists()) {
+        return res.status(400).json({ message: 'NPM already registered' });
+      }
+
       await set(ref(db, `students/${npm}`), {
         npm,
         name, 
         class: className
       });
-      res.status(201).json({ message: 'Mahasiswa berhasil ditambahkan' });
+      res.status(201).json({ message: 'Student added successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -39,7 +46,7 @@ const studentController = {
       if (snapshot.exists()) {
         res.status(200).json(snapshot.val());
       } else {
-        res.status(404).json({ message: 'Mahasiswa tidak ditemukan' });
+        res.status(404).json({ message: 'Student not found' });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -55,7 +62,7 @@ const studentController = {
       if (className) updates.class = className;
       
       await update(ref(db, `students/${req.params.npm}`), updates);
-      res.status(200).json({ message: 'Data mahasiswa berhasil diupdate' });
+      res.status(200).json({ message: 'Student data updated successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -65,7 +72,7 @@ const studentController = {
   deleteStudent: async (req, res) => {
     try {
       await remove(ref(db, `students/${req.params.npm}`));
-      res.status(200).json({ message: 'Data mahasiswa berhasil dihapus' });
+      res.status(200).json({ message: 'Student data deleted successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
